@@ -108,9 +108,9 @@ version = "0.3.2"
 
 [[FileIO]]
 deps = ["Pkg", "Random", "Test"]
-git-tree-sha1 = "1a114d08094e7267ba8d4d684f930d5a722184de"
+git-tree-sha1 = "c94b0787956629036fb2b20fccde9e52b89d079a"
 uuid = "5789e2e9-d7fb-5bc7-8068-2c6fae9b9549"
-version = "1.0.4"
+version = "1.0.5"
 
 [[FixedPointNumbers]]
 deps = ["Test"]
@@ -322,6 +322,12 @@ git-tree-sha1 = "f6fbf4ba64d295e146e49e021207993b6b48c7d1"
 uuid = "ae029012-a4dd-5104-9daa-d747884805df"
 version = "0.5.2"
 
+[[Retry]]
+deps = ["Test"]
+git-tree-sha1 = "de2c066886416190da2ab3dbaa0e89e09ccd03c2"
+uuid = "20febd7b-183b-5ae2-ac4a-720e7ce64774"
+version = "0.3.0"
+
 [[SHA]]
 uuid = "ea8e919c-243c-51af-8825-aaa63cd721ce"
 
@@ -336,7 +342,7 @@ uuid = "1a1011a3-84de-559e-8e89-a11a2f7dc383"
 deps = ["IterativeSolvers", "PaddedViews", "Printf", "Requires", "SparseArrays", "StaticArrays", "Test"]
 git-tree-sha1 = "55b6540d2f7672d0eb2612d6c210b802d590c5dc"
 repo-rev = "master"
-repo-url = "https://github.com/PieterjanRobbe/SimpleMultigrid.jl"
+repo-url = "https://github.com/PieterjanRobbe/SimpleMultigrid.jl.git"
 uuid = "e8fea2e7-436f-5c48-8914-48864cfb6713"
 version = "1.0.0"
 

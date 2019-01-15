@@ -2,7 +2,7 @@ module LognormalDiffusionProblems
 
 ## dependencies ##
 
-using Distributed, FFTW, GaussianRandomFields, Interpolations, PaddedViews, Statistics
+using Distributed, FFTW, GaussianRandomFields, Interpolations, PaddedViews, Printf, Retry, Statistics
 
 using MultilevelEstimators, NotSoSimpleMultigrid, SimpleMultigrid
 
@@ -20,10 +20,10 @@ export init_lognormal, sample_lognormal, compute_grf, Qoi1, Qoi2, Qoi3, Qoi4, MG
 
 ## include statements ##
 
+include("init.jl")
+
 include("solvers.jl")
 
 include("sample.jl")
-
-include("init.jl")
 
 end # module
