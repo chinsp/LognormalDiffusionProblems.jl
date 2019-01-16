@@ -1,9 +1,18 @@
 #
+# direct solver
+#
+function FMG_solve(f::Function, sz::Dims, index::Index, solver::DirectSolver, reuse::NoReuse)
+	A = f(sz...)
+	x = A\ones(size(A, 1))
+	[x], [sz], nothing
+end
+
+#
 # μ-cycle analysis
 #
 
 "return the Multigrid residual norm after `iters` multigrid μ-cycles"
-function μ_cycle_solve(f::Function, sz::Dims, solver::AbstractSolver, iters::Integer)
+function μ_cycle_solve(f::Function, sz::Dims, solver::AbstractMGSolver, iters::Integer)
 	mg = MG(f, sz, solver)
 	fill!(mg.grids[1].b, 1)
 	for iter in Iterators.take(mg, iters) end
@@ -26,7 +35,7 @@ function FMG_solve(f::Function, sz::Dims, index::Index, solver::AbstractSolver, 
     view(sol, R), view(size.(mg.grids), R), iters
 end
 
-selectrange(index::Index, ::Reuse) = CartesianIndices(index .+ one(index)) 
+selectrange(index::Index, ::Reuse) = CartesianIndices(index + one(index)) 
 
 selectrange(index::Index, ::NoReuse) = CartesianIndex(1) 
 
@@ -41,7 +50,7 @@ function FMG!(mg::MultigridIterable{<:Any, <:AbstractVector}, grid_ptr::Integer)
         iters = Vector{typeof(grid_ptr)}(undef, length(grids))
     else
 		copyto!(grids[grid_ptr + 1].b, grids[grid_ptr].R*grids[grid_ptr].b)
-        sol, ν₀s = FMG!(mg, grid_ptr + 1)
+        sol, iters = FMG!(mg, grid_ptr + 1)
 		copyto!(grids[grid_ptr].x, P(Cubic(), grids[grid_ptr + 1].sz...) * grids[grid_ptr + 1].x)
     end
     iter = 0
@@ -89,14 +98,15 @@ function FMG!(mg::MultigridIterable{<:Any, <:AbstractMatrix}, grid_ptr::Int)
             λ² = broadcast(i->broadcast(j->j^2, i), λ)
             ω = map(i -> λ²[i] ./ sum(λ²), 1:length(λ))
             ip = map(i -> P̃(first(i), Cubic(), grids[last(i)].sz...) * grids[last(i)].x, R_parent)
-			if length(R_parent) == 1
+			c = sum(map(i->ω[i].*ip[i], 1:length(ω)))
+			if length(collect(R_parent)) == 1
 				d = SimpleMultigrid.residu(grids[I])
             	α = c'*d/(c'*grids[I].A*c)
             	α = isnan(α) ? one(eltype(c)) : min(1.1, max(0.7, α))
 			else
 				α = 1.
 			end
-			copyto!(grids[I].x, α * sum(map(i->ω[i].*ip[i], 1:length(ω))))
+			copyto!(grids[I].x, α * c)
         end
     end
 	iter = 0
@@ -112,7 +122,7 @@ function FMG!(mg::MultigridIterable{<:Any, <:AbstractMatrix}, grid_ptr::Int)
 		iters[I] = iter
 	end
 
-    return sol, ν₀s
+    return sol, iters
 end
 
 converged(grids::Matrix{<:Grid}, grid_ptr, R) = all([converged(grids[I]) for I in grids_at_level(R, grid_ptr)]) 

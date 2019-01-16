@@ -21,30 +21,30 @@ function sample_lognormal(index::Index, x::Vector{<:AbstractFloat}, grf::Gaussia
 		end
 		g(n, m) = elliptic2d(f(n, m))
 
-		if analyse <: AnalyseV
-			return μ_cycle_solve(get_problem(grf, x)..., solver, 50)
+		if analyse isa AnalyseV
+			return μ_cycle_solve(g, sz, solver, 50)
 		else
 			# solve
 			xfs, szs, iters = FMG_solve(g, sz, index, solver, reuse)
-			if analyse <: AnalyseFMG 
+			if analyse isa AnalyseFMG 
 				return iters
 			else
 				Qf = apply_qoi(xfs, szs, index, reuse, qoi)
 
 				# compute difference
 				dQ = copy(Qf)
-				if reuse <: NoReuse
+				if reuse isa NoReuse
 					for (key, val) in diff(index)
-						szc = div.(sz, max.(1, (index.-key).*2))
-						xcs, szcs = FMG_solve(g, szc, solver, reuse)
+						szc = div.(sz, max.(1, (index - key).I .* 2))
+						xcs, szcs = FMG_solve(g, szc, key, solver, reuse)
 						Qc = apply_qoi(xcs, szcs, key, reuse, qoi)
 						dQ += val*Qc
 					end
 				else
 					for i in CartesianIndices(dQ)
-						index_ = Index(i-one(i))
+						index_ = Index(i - one(i))
 						for (key, val) in diff(index_)
-							dQ[i] += val*Qf[(key.+1)...]
+							dQ[i] += val*Qf[key + one(key)]
 						end
 					end
 				end
@@ -94,18 +94,18 @@ end
 #
 # apply quantity of interest
 #
-apply_qoi(xfs, f, szs, index, ::NoReuse, qoi) = apply_qoi(reshape(xfs, szs.-1), f(szs...), qoi)
+apply_qoi(xfs, szs, index, ::NoReuse, qoi) = apply_qoi(reshape(xfs[1], szs[1] .- 1), qoi)
 
-apply_qoi(xfs, f, szs, index, ::Reuse, qoi) = map(i->apply_qoi(reshape(xfs[i], szs[i].-1), f(szs[i]...), qoi), Base.Iterators.reverse(eachindex(xfs)))
+apply_qoi(xfs, szs, index, ::Reuse, qoi) = map(i->apply_qoi(reshape(xfs[i], szs[i] .- 1), qoi), Base.Iterators.reverse(eachindex(xfs)))
 
 "point evaluation of solution at [0.5, 0.5]"
-@inline function apply_qoi(x, k, ::Qoi1)
+@inline function apply_qoi(x, ::Qoi1)
 	sz = size(x) .+ 1
 	x[div.(sz, 2)...]
 end
 
 "average value of solution over [0.25:0.5, 0.25:0.5]"
-@inline function apply_qoi(x, k, ::Qoi2)
+@inline function apply_qoi(x, ::Qoi2)
 	sz = size(x) .+ 1
 	i_end = div.(sz, 2)
 	i_start = div.(i_end, 2)
@@ -113,7 +113,7 @@ end
 end
 
 "point evaluation of solution at 16 points along middle line"
-@inline function apply_qoi(x, k, ::Qoi3)
+@inline function apply_qoi(x, ::Qoi3)
 	xp = PaddedView(0, x, size(x).+2, (2,2))
 	itp = interpolate(xp, BSpline(Linear()))
 	sz = size(x) .+ 1
@@ -124,7 +124,7 @@ end
 @inline function apply_qoi(x, ::Qoi4)
 	px = PaddedView(zero(eltype(x)), x, size(x).+2, (2,2))
 	n, m = size(px)
-	trapz((m-1)*view(px, :, m-1), 1)
+	trapz((m-1)*view(px, :, m-1), 1)[1]
 end
 
 #

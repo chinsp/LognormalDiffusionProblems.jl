@@ -340,11 +340,9 @@ uuid = "1a1011a3-84de-559e-8e89-a11a2f7dc383"
 
 [[SimpleMultigrid]]
 deps = ["IterativeSolvers", "PaddedViews", "Printf", "Requires", "SparseArrays", "StaticArrays", "Test"]
-git-tree-sha1 = "55b6540d2f7672d0eb2612d6c210b802d590c5dc"
-repo-rev = "master"
-repo-url = "https://github.com/PieterjanRobbe/SimpleMultigrid.jl.git"
+path = "/Users/Pieterjan/.julia/dev/SimpleMultigrid"
 uuid = "e8fea2e7-436f-5c48-8914-48864cfb6713"
-version = "1.0.0"
+version = "1.0.2"
 
 [[Sockets]]
 uuid = "6462fe0b-24de-5631-8697-dd941f90decc"

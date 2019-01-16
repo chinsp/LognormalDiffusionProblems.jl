@@ -16,11 +16,15 @@ struct Qoi4 <:AbstractQoi end
 #
 abstract type AbstractSolver end
 
-struct MGSolver{C} <: AbstractSolver
+abstract type AbstractMGSolver <: AbstractSolver end
+
+struct DirectSolver <: AbstractSolver end
+
+struct MGSolver{C} <: AbstractMGSolver
 	cycle::C
 end
 
-struct MSGSolver{C} <: AbstractSolver
+struct MSGSolver{C} <: AbstractMGSolver
 	cycle::C
 end
 
@@ -73,11 +77,9 @@ get_arg(args::Dict{Symbol,Any}, arg::Val{T}) where T = throw(ArgumentError(strin
 
 @get_arg :solver args[:index_set] isa U && ndims(args[:index_set]) > 1 ? MSGSolver(W(3, 3)) : MGSolver(W(3, 3))
 
-@get_arg :reuse false
-
 @get_arg :analyse NoAnalyse()
 
-@get_arg :max_search_space TD(2)
+@get_arg :max_search_space ndims(args[:index_set]) == 1 ? ML() : TD(2)
 
 forbidden_keys() = [:nb_of_coarse_dofs, :covariance_function, :length_scale, :smoothness, :grf_generator, :minpadding, :index_set, :qoi, :damping, :solver, :analyse]
 
@@ -89,6 +91,12 @@ function init_lognormal(index_set::AbstractIndexSet, sample_method::AbstractSamp
     # read optional arguments
     args = Dict{Symbol,Any}(kwargs)
     args[:index_set] = index_set
+
+	# required keys
+	args[:max_index_set_param] = get_arg(args, :max_index_set_param)
+	if index_set isa Union{AD, U}
+		args[:max_search_space] = get_arg(args, :max_search_space)
+	end
 
     # compute Gaussian random fields
     cov_fun = CovarianceFunction(2, get_arg(args, :covariance_function))
@@ -102,8 +110,11 @@ function init_lognormal(index_set::AbstractIndexSet, sample_method::AbstractSamp
     # sample function
     qoi = get_arg(args, :qoi)
     solver = get_arg(args, :solver)
-	reuse = get_arg(args, :reuse) ? Reuse() : NoReuse()
+	reuse = index_set isa U ? Reuse() : NoReuse()
 	analyse = get_arg(args, :analyse)
+	if analyse != NoAnalyse() && get_arg(args, :solver) == DirectSolver()
+		throw(ArgumentError("no analyse available for DirectSolver."))
+	end
     sample_function = (index, x) -> sample_lognormal(index, x, grfs[index], qoi, solver, reuse, analyse)
 
     # distributions
@@ -113,9 +124,14 @@ function init_lognormal(index_set::AbstractIndexSet, sample_method::AbstractSamp
 	# set nb_of_uncertainties for more efficient sampling
 	args[:nb_of_uncertainties] = index -> randdim(grfs[index])
 
+	# set nb of qoi
+	if get_arg(args, :qoi) == Qoi3
+		args[:nb_of_qoi] = 16
+	end
+
     # estimator
 	for key in forbidden_keys() 
-		delete(args, key)
+		delete!(args, key)
 	end
     Estimator(index_set, sample_method, sample_function, distributions; args...)
 
@@ -130,7 +146,7 @@ get_max_index_set(::Union{AD, U}, args) = get_index_set(get_arg(args, :max_searc
 #
 # grf computations
 #
-grid_size(index::Index) = 2 .^index
+grid_size(index::Index) = 2 .^index.I
 grid_size(level::Level) = (2^level[1], 2^level[1])
 
 function compute_grf(cov_fun, grf_generator, m0, index, p)
