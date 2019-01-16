@@ -5,7 +5,7 @@ function sample_lognormal(index::Index, x::Vector{<:AbstractFloat}, grf::Gaussia
 
 	# wrap the sample code in a try-catch  
 	ntries = 3
-	max_badness = 10
+	max_badness = 100
 
 	@repeat ntries try
 
