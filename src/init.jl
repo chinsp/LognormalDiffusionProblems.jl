@@ -107,6 +107,13 @@ function init_lognormal(index_set::AbstractIndexSet, sample_method::AbstractSamp
     grf_generator = get_arg(args, :grf_generator)
 	grfs = Dict(index => compute_grf(cov_fun, grf_generator, m0, index, p(index)) for index in indices)
 
+	# reorder for QMC
+	if grf_generator isa CirculantEmbedding
+		reorder = Dict(index => reordering(grfs[index]) for index in indices)  
+	else
+		reorder = Dict(index => 1:randdim(grfs[index]) for index in indices)
+	end
+
     # sample function
     qoi = get_arg(args, :qoi)
     solver = get_arg(args, :solver)
@@ -115,7 +122,7 @@ function init_lognormal(index_set::AbstractIndexSet, sample_method::AbstractSamp
 	if analyse != NoAnalyse() && get_arg(args, :solver) == DirectSolver()
 		throw(ArgumentError("no analyse available for DirectSolver."))
 	end
-    sample_function = (index, x) -> sample_lognormal(index, x, grfs[index], qoi, solver, reuse, analyse)
+	sample_function = (index, x) -> sample_lognormal(index, x, grfs[index], reorder[index], qoi, solver, reuse, analyse)
 
     # distributions
     s = maximum(randdim.(collect(values(grfs))))
@@ -125,8 +132,13 @@ function init_lognormal(index_set::AbstractIndexSet, sample_method::AbstractSamp
 	args[:nb_of_uncertainties] = index -> randdim(grfs[index])
 
 	# set nb of qoi
-	if get_arg(args, :qoi) == Qoi3
+	if qoi isa Qoi3
 		args[:nb_of_qoi] = 16
+	end
+
+	# qmc
+	if sample_method isa QMC
+		args[:point_generator] = LatticeRule32(3600)
 	end
 
     # estimator
@@ -158,3 +170,11 @@ end
 compute_grf(cov_fun, grf_generator::GaussianRandomFieldGenerator, pts, p) = GaussianRandomField(cov_fun, grf_generator, pts...)
 
 compute_grf(cov_fun, grf_generator::CirculantEmbedding, pts, p) = GaussianRandomField(cov_fun, grf_generator, pts..., minpadding=p, measure=false)
+
+function reordering(grf::GaussianRandomField{<:CirculantEmbedding})
+	v, P = grf.data
+	I = sortperm(view(v, :), rev=true)
+	x = collect(1:length(v))
+	x[I] .= 1:length(v)
+	return x
+end

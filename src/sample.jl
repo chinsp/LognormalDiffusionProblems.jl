@@ -1,7 +1,7 @@
 #
 # sample
 #
-function sample_lognormal(index::Index, x::Vector{<:AbstractFloat}, grf::GaussianRandomField, qoi::AbstractQoi, solver::AbstractSolver, reuse::AbstractReuse, analyse::AbstractAnalyse)
+function sample_lognormal(index::Index, x::Vector{<:AbstractFloat}, grf::GaussianRandomField, reorder::Vector{<:Integer}, qoi::AbstractQoi, solver::AbstractSolver, reuse::AbstractReuse, analyse::AbstractAnalyse)
 
 	# wrap the sample code in a try-catch  
 	ntries = 3
@@ -9,7 +9,7 @@ function sample_lognormal(index::Index, x::Vector{<:AbstractFloat}, grf::Gaussia
 
 	@repeat ntries try
 
-		Z = my_grf_sample(grf, view(x, 1:randdim(grf)))
+		Z = my_grf_sample(grf, view(x, reorder))
 		k = exp.(Z)
 		sz = size(k) .+ 1
 
