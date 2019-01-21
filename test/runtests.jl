@@ -1,4 +1,6 @@
-using GaussianRandomFields, LognormalDiffusionProblems, MultilevelEstimators, SimpleMultigrid, Test
+using GaussianRandomFields, LognormalDiffusionProblems, MultilevelEstimators, Random, SimpleMultigrid, Test
+
+Random.seed!(100)
 
 #
 # Test GRF options
@@ -20,7 +22,7 @@ end
 # MLMC, Qoi1, no reuse
 #
 @testset "MLMC, Qoi1               " begin
-	for solver in [MGSolver(W(3, 3)), MSGSolver(W(3, 3)), DirectSolver()]
+	for solver in [MGSolver(W(3, 3)), MSGSolver(W(4, 4)), DirectSolver()]
 		estimator = init_lognormal(ML(), MC(), solver=solver, max_index_set_param=5)
 		@test estimator isa Estimator{<:ML, <:MC}
 		level = Level(0)
@@ -40,7 +42,7 @@ end
 # TDMC, Qoi2, no reuse
 #
 @testset "TDMC, Qoi2               " begin
-	for solver in [MGSolver(W(3, 3)), MSGSolver(W(3, 3)), DirectSolver()]
+	for solver in [MGSolver(W(3, 3)), MSGSolver(W(4, 4)), DirectSolver()]
 		estimator = init_lognormal(TD(2), MC(), solver=solver)
 		@test estimator isa Estimator{<:TD{2}, <:MC}
 		index = Index(0, 0)
@@ -60,7 +62,7 @@ end
 # MLMC, Qoi3, no reuse
 #
 @testset "MLMC, Qoi3               " begin
-	for solver in [MGSolver(W(3, 3)), MSGSolver(W(3, 3))]
+	for solver in [MGSolver(W(3, 3)), MSGSolver(W(4, 4))]
 		estimator = init_lognormal(ML(), MC(), qoi=Qoi3(), max_index_set_param=3, nb_of_coarse_dofs=4, solver=solver)
 		@test estimator isa Estimator{<:ML, <:MC}
 		level = Level(0)
@@ -84,7 +86,7 @@ end
 # ADMC, Qoi4, no reuse
 #
 @testset "ADMC, Qoi4               " begin
-	for solver in [MGSolver(W(3, 3)), MSGSolver(W(3, 3))]
+	for solver in [MGSolver(W(3, 3)), MSGSolver(W(4, 4))]
 		estimator = init_lognormal(AD(2), MC(), solver=solver, qoi=Qoi4())
 		@test estimator isa Estimator{<:AD{2}, <:MC}
 		index = Index(0, 0)
@@ -104,7 +106,7 @@ end
 # MG W-cycle analyse
 #
 @testset "ML, MG, W-cycle analysis " begin
-	estimator = init_lognormal(ML(), MC(), solver=MGSolver(W(4, 3)), max_index_set_param=5, analyse=AnalyseV())
+	estimator = init_lognormal(ML(), MC(), solver=MGSolver(W(3, 3)), max_index_set_param=5, analyse=AnalyseV())
 	@test estimator isa Estimator{<:ML, <:MC}
 	for level in get_index_set(estimator, estimator.options[:max_index_set_param])
 		for i in 1:10
@@ -151,7 +153,7 @@ end
 # MSG FMG analyse
 #
 @testset "TD, MSG, FMG analysis    " begin
-	estimator = init_lognormal(TD(2), MC(), solver=MSGSolver(W(4, 3)), analyse=AnalyseFMG(), nb_of_coarse_dofs=8)
+	estimator = init_lognormal(TD(2), MC(), solver=MSGSolver(W(4, 4)), analyse=AnalyseFMG(), nb_of_coarse_dofs=8)
 	@test estimator isa Estimator{<:TD{2}, <:MC}
 	for index in get_index_set(estimator, estimator.options[:max_index_set_param])
 		for i in 1:10
@@ -218,5 +220,24 @@ end
 		@test dQ isa Matrix{<:Vector{<:Float64}}
 		@test Q isa Matrix{<:Vector{<:Float64}}
 		@test all(dQ[1] .== Q[1])
+	end
+end
+
+#
+# MG{U{1}}, MC, Qoi1, reuse
+#
+@testset "MG{U{1}}, MC, Qoi1       " begin
+	estimator = init_lognormal(MG(U(1)), MC())
+	@test estimator isa Estimator{<:MG{1, U{1}}, <:MC}
+	index = Level(0)
+	dQ, Q = estimator.sample_function(index, randn(estimator.options[:nb_of_uncertainties](index)))
+	@test dQ isa Vector{<:Float64}
+	@test Q isa Vector{<:Float64}
+	@test all(dQ .== Q)
+	for index in get_index_set(estimator.options[:max_search_space], estimator.options[:max_index_set_param])
+		dQ, Q = estimator.sample_function(index, randn(estimator.options[:nb_of_uncertainties](index)))
+		@test dQ isa Vector{<:Float64}
+		@test Q isa Vector{<:Float64}
+		@test dQ[1] == Q[1]
 	end
 end

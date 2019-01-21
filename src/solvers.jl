@@ -1,7 +1,7 @@
 #
 # direct solver
 #
-function FMG_solve(f::Function, sz::Dims, index::Index, solver::DirectSolver, reuse::NoReuse)
+function FMG_solve(f::Function, sz::Dims, index::Index, solver::DirectSolver, reuse::DefaultReuse)
 	A = f(sz...)
 	x = A\ones(size(A, 1))
 	[x], [sz], nothing
@@ -37,7 +37,7 @@ end
 
 selectrange(index::Index, ::Reuse) = CartesianIndices(index + one(index)) 
 
-selectrange(index::Index, ::NoReuse) = CartesianIndex(1) 
+selectrange(index::Index, ::AbstractReuse) = CartesianIndex(1) 
 
 #
 # custom FMG implementation for MG that returns the coarse solutions
