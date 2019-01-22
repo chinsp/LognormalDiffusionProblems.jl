@@ -37,8 +37,6 @@ struct Reuse <: AbstractReuse end
 
 struct NoReuse <: AbstractReuse end
 
-struct DefaultReuse <: AbstractReuse end
-
 #
 # AbstractAnalyse
 #
@@ -96,7 +94,7 @@ function init_lognormal(index_set::AbstractIndexSet, sample_method::AbstractSamp
 
 	# required keys
 	args[:max_index_set_param] = get_arg(args, :max_index_set_param)
-	if index_set isa Union{AD, U, MG}
+	if index_set isa Union{AD, U}
 		args[:max_search_space] = get_arg(args, :max_search_space)
 	end
 
@@ -119,7 +117,7 @@ function init_lognormal(index_set::AbstractIndexSet, sample_method::AbstractSamp
     # sample function
     qoi = get_arg(args, :qoi)
     solver = get_arg(args, :solver)
-	reuse = index_set isa U ? NoReuse() : index_set isa MG ? Reuse() : DefaultReuse()
+	reuse = index_set isa U ? Reuse() : NoReuse()
 	analyse = get_arg(args, :analyse)
 	if analyse != NoAnalyse() && get_arg(args, :solver) == DirectSolver()
 		throw(ArgumentError("no analyse available for DirectSolver."))
@@ -155,7 +153,7 @@ get_max_index_set(index_set, args) = get_index_set(index_set, get_arg(args, :max
 
 get_max_index_set(::SL, args) = [Level(0)]
 
-get_max_index_set(::Union{AD, U, MG}, args) = get_index_set(get_arg(args, :max_search_space), get_arg(args, :max_index_set_param))
+get_max_index_set(::Union{AD, U}, args) = get_index_set(get_arg(args, :max_search_space), get_arg(args, :max_index_set_param))
 
 #
 # grf computations

@@ -2,9 +2,11 @@ module LognormalDiffusionProblems
 
 ## dependencies ##
 
-using Distributed, FFTW, GaussianRandomFields, Interpolations, PaddedViews, Printf, Random, Retry, Statistics
+using Distributed, FFTW, GaussianRandomFields, Interpolations, PaddedViews, Printf, Random, Retry, Reexport, Statistics
 
-using MultilevelEstimators, NotSoSimpleMultigrid, SimpleMultigrid
+using NotSoSimpleMultigrid, SimpleMultigrid
+
+@reexport using MultilevelEstimators
 
 ## import statements ##
 

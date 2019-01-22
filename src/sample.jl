@@ -29,24 +29,11 @@ function sample_lognormal(index::Index, x::Vector{<:AbstractFloat}, grf::Gaussia
 			if analyse isa AnalyseFMG 
 				return iters
 			else
-				if reuse isa NoReuse
-					val = apply_qoi(xfs, szs, index, reuse, qoi)
-					Qf = Array{typeof(val), length(index)}(undef, index.I .+ 1)
-					Qf[end] = val
-					R = CartesianIndices(Qf)
-					for i in Iterators.take(R, length(R)-1)
-						idx = Index(i) - one(i)
-						szc = div.(sz, max.(1, 2 .^(index - idx).I))
-						xcs, szcs = FMG_solve(g, szc, idx, solver, reuse)
-						Qf[i] = apply_qoi(xcs, szcs, idx, reuse, qoi)
-					end
-				else
-					Qf = apply_qoi(xfs, szs, index, reuse, qoi)
-				end
+				Qf = apply_qoi(xfs, szs, index, reuse, qoi)
 
 				# compute difference
 				dQ = copy(Qf)
-				if reuse isa DefaultReuse
+				if reuse isa NoReuse
 					for (key, val) in diff(index)
 						szc = div.(sz, max.(1, (index - key).I .* 2))
 						xcs, szcs = FMG_solve(g, szc, key, solver, reuse)
@@ -107,7 +94,7 @@ end
 #
 # apply quantity of interest
 #
-apply_qoi(xfs, szs, index, ::AbstractReuse, qoi) = apply_qoi(reshape(xfs[1], szs[1] .- 1), qoi)
+apply_qoi(xfs, szs, index, ::NoReuse, qoi) = apply_qoi(reshape(xfs[1], szs[1] .- 1), qoi)
 
 apply_qoi(xfs, szs, index, ::Reuse, qoi) = map(i->apply_qoi(reshape(xfs[i], szs[i] .- 1), qoi), Base.Iterators.reverse(eachindex(xfs)))
 
