@@ -17,3 +17,9 @@ Reexport = "189a3867-3050-52da-a836-e630ba90ab69"
 Retry = "20febd7b-183b-5ae2-ac4a-720e7ce64774"
 SimpleMultigrid = "e8fea2e7-436f-5c48-8914-48864cfb6713"
 Statistics = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]

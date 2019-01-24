@@ -171,7 +171,7 @@ uuid = "a63ad114-7e13-5084-954f-fe012c677804"
 
 [[MultilevelEstimators]]
 deps = ["Dates", "DelimitedFiles", "Distributed", "JLD2", "LinearAlgebra", "Printf", "Random", "SpecialFunctions", "Statistics"]
-git-tree-sha1 = "b511be9f03fd21301576ddcd6e328ea0e98ccd16"
+git-tree-sha1 = "24d0170bc21abac8d8838d4660119f6c7eeedd6a"
 repo-rev = "master"
 repo-url = "https://github.com/PieterjanRobbe/MultilevelEstimators.jl.git"
 uuid = "bc769cb7-f249-5bba-802a-80f19cb247ec"
