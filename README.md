@@ -1,1 +1,1 @@
-# LognormalDiffusionProblems
+# LognormalDiffusionProblems.jl

@@ -1,4 +1,6 @@
-using GaussianRandomFields, LognormalDiffusionProblems, MultilevelEstimators, SimpleMultigrid, Test
+using GaussianRandomFields, LognormalDiffusionProblems, MultilevelEstimators, Random, SimpleMultigrid, Test
+
+Random.seed!(100)
 
 #
 # Test GRF options
