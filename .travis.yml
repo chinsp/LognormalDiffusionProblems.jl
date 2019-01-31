@@ -10,10 +10,10 @@ julia:
 matrix:
   allow_failures:
     - julia: nightly
-before_script:
-    - julia -e 'using Pkg; Pkg.add(PackageSpec(url="https://github.com/PieterjanRobbe/SimpleMultigrid.jl", rev="master")); using SimpleMultigrid'
-    - julia -e 'using Pkg; Pkg.add(PackageSpec(url="https://github.com/PieterjanRobbe/NotSoSimpleMultigrid.jl", rev="master")); using NotSoSimpleMultigrid'
-    - julia -e 'using Pkg; Pkg.add(PackageSpec(url="https://github.com/PieterjanRobbe/MultilevelEstimators.jl", rev="master")); using MultilevelEstimators'
+      #before_script:
+      #- julia -e 'using Pkg; Pkg.add(PackageSpec(url="https://github.com/PieterjanRobbe/SimpleMultigrid.jl", rev="master")); using SimpleMultigrid'
+      #- julia -e 'using Pkg; Pkg.add(PackageSpec(url="https://github.com/PieterjanRobbe/NotSoSimpleMultigrid.jl", rev="master")); using NotSoSimpleMultigrid'
+      #- julia -e 'using Pkg; Pkg.add(PackageSpec(url="https://github.com/PieterjanRobbe/MultilevelEstimators.jl", rev="master")); using MultilevelEstimators'
 env:
   - PYTHON=""
 notifications:
