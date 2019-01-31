@@ -10,12 +10,16 @@ julia:
 matrix:
   allow_failures:
     - julia: nightly
+before_script:
+    - julia -e 'using Pkg; Pkg.add("https://github.com/PieterjanRobbe/SimpleMultigrid.jl.git"); using SimpleMultigrid'
+    - julia -e 'using Pkg; Pkg.add("https://github.com/PieterjanRobbe/NotSoSimpleMultigrid.jl.git"); using NotSoSimpleMultigrid'
+    - julia -e 'using Pkg; Pkg.add("https://github.com/PieterjanRobbe/MultilevelEstimators.jl.git"); using MultilevelEstimators'
 env:
   - PYTHON=""
 notifications:
   email: false
 after_success:
   # push coverage results to Coveralls
-  - julia -e 'using Pkg; cd(Pkg.dir("LognormalDiffusionProblems")); Pkg.add("Coverage"); using Coverage; Coveralls.submit(process_folder())'
+  - julia -e 'using Pkg; cd(Pkg.dir("SimpleMultigrid")); Pkg.add("Coverage"); using Coverage; Coveralls.submit(process_folder())'
   # push coverage results to Codecov
-  - julia -e 'using Pkg; cd(Pkg.dir("LognormalDiffusionProblems")); Pkg.add("Coverage"); using Coverage; Codecov.submit(process_folder())'
+  - julia -e 'using Pkg; cd(Pkg.dir("SimpleMultigrid")); Pkg.add("Coverage"); using Coverage; Codecov.submit(process_folder())'
