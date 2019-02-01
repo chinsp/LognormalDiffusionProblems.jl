@@ -1,7 +1,7 @@
 #
 # sample
 #
-function sample_lognormal(index::Index, x::Vector{<:AbstractFloat}, grf::GaussianRandomField, reorder::Vector{<:Integer}, qoi::AbstractQoi, solver::AbstractSolver, reuse::AbstractReuse, analyse::AbstractAnalyse)
+function sample_lognormal(index::Index, x::Vector{<:AbstractFloat}, grf::GaussianRandomField, reorder::AbstractArray{<:Integer, 1}, qoi::AbstractQoi, solver::AbstractSolver, reuse::AbstractReuse, analyse::AbstractAnalyse)
 
 	# wrap the sample code in a try-catch  
 	ntries = 3
