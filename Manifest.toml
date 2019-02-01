@@ -51,15 +51,15 @@ version = "0.9.5"
 
 [[Compat]]
 deps = ["Base64", "Dates", "DelimitedFiles", "Distributed", "InteractiveUtils", "LibGit2", "Libdl", "LinearAlgebra", "Markdown", "Mmap", "Pkg", "Printf", "REPL", "Random", "Serialization", "SharedArrays", "Sockets", "SparseArrays", "Statistics", "Test", "UUIDs", "Unicode"]
-git-tree-sha1 = "ec61a16eed883ad0cfa002d7489b3ce6d039bb9a"
+git-tree-sha1 = "49269e311ffe11ac5b334681d212329002a9832a"
 uuid = "34da2185-b29b-5c13-b0c7-acf172513d20"
-version = "1.4.0"
+version = "1.5.1"
 
 [[Conda]]
 deps = ["Compat", "JSON", "VersionParsing"]
-git-tree-sha1 = "fb86fe40cb5b35990e368709bfdc1b46dbb99dac"
+git-tree-sha1 = "b625d802587c2150c279a40a646fba63f9bd8187"
 uuid = "8f4d0f93-b110-5947-807f-2305c1781a2d"
-version = "1.1.1"
+version = "1.2.0"
 
 [[DataStructures]]
 deps = ["InteractiveUtils", "OrderedCollections", "Random", "Serialization", "Test"]
@@ -115,9 +115,9 @@ uuid = "b77e0a4c-d291-57a0-90e8-8db25a27a240"
 
 [[Interpolations]]
 deps = ["AxisAlgorithms", "LinearAlgebra", "OffsetArrays", "Random", "Ratios", "SharedArrays", "SparseArrays", "StaticArrays", "Test", "WoodburyMatrices"]
-git-tree-sha1 = "1ec5b78dbfb5ae2b3d7a4987a9287fed4cc31ded"
+git-tree-sha1 = "e8d1c381b1dc5343e5b6d37265acbe1de493d512"
 uuid = "a98d9a8b-a2ab-59e6-89dd-64a1c18fca59"
-version = "0.11.1"
+version = "0.11.2"
 
 [[IterativeSolvers]]
 deps = ["LinearAlgebra", "Printf", "Random", "RecipesBase", "SparseArrays", "Test"]
@@ -171,7 +171,7 @@ uuid = "a63ad114-7e13-5084-954f-fe012c677804"
 
 [[MultilevelEstimators]]
 deps = ["Dates", "DelimitedFiles", "Distributed", "JLD2", "LinearAlgebra", "Printf", "Random", "SpecialFunctions", "Statistics"]
-git-tree-sha1 = "7d2a5e81c426a33e76a17399e48b6f8210478677"
+git-tree-sha1 = "27be71b6de83a9f8c1192ee238cdc7241643dbf4"
 repo-rev = "master"
 repo-url = "https://github.com/PieterjanRobbe/MultilevelEstimators.jl.git"
 uuid = "bc769cb7-f249-5bba-802a-80f19cb247ec"
@@ -179,7 +179,7 @@ version = "0.0.0"
 
 [[NotSoSimpleMultigrid]]
 deps = ["LinearAlgebra", "Printf", "Requires", "SimpleMultigrid", "SparseArrays", "StaticArrays", "Statistics", "Test"]
-git-tree-sha1 = "81463f2ce31c197f394588e9c5c48ac63ad969c6"
+git-tree-sha1 = "e7ac537dbe13dbf78fbc99a1388638c7b16092cf"
 repo-rev = "master"
 repo-url = "https://github.com/PieterjanRobbe/NotSoSimpleMultigrid.jl.git"
 uuid = "bc769cb7-f249-5bba-802a-79f19cb249ec"
@@ -206,6 +206,12 @@ version = "0.4.2"
 [[Pkg]]
 deps = ["Dates", "LibGit2", "Markdown", "Printf", "REPL", "Random", "SHA", "UUIDs"]
 uuid = "44cfe95a-1eb2-52ea-b672-e2afdf69b78f"
+
+[[Primes]]
+deps = ["Test"]
+git-tree-sha1 = "ff1a2323cb468ec5f201838fcbe3c232266b1f95"
+uuid = "27ebfcd6-29c5-5fa9-bf4b-fb8fc14df3ae"
+version = "0.4.0"
 
 [[Printf]]
 deps = ["Unicode"]
@@ -272,8 +278,8 @@ deps = ["Distributed", "Mmap", "Random", "Serialization"]
 uuid = "1a1011a3-84de-559e-8e89-a11a2f7dc383"
 
 [[SimpleMultigrid]]
-deps = ["IterativeSolvers", "PaddedViews", "Printf", "Requires", "SparseArrays", "StaticArrays", "Test"]
-git-tree-sha1 = "5ec8b2ecc65432c0a72c2983f848b4749c13ece6"
+deps = ["IterativeSolvers", "LinearAlgebra", "PaddedViews", "Primes", "Printf", "Requires", "SparseArrays", "StaticArrays", "Test"]
+git-tree-sha1 = "900625ba68a28c8c040ea4fe0827b5e59289d049"
 repo-rev = "master"
 repo-url = "https://github.com/PieterjanRobbe/SimpleMultigrid.jl.git"
 uuid = "e8fea2e7-436f-5c48-8914-48864cfb6713"
