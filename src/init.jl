@@ -21,11 +21,11 @@ abstract type AbstractMGSolver <: AbstractSolver end
 struct DirectSolver <: AbstractSolver end
 
 struct MGSolver{C} <: AbstractMGSolver
-	cycle::C
+    cycle::C
 end
 
 struct MSGSolver{C} <: AbstractMGSolver
-	cycle::C
+    cycle::C
 end
 
 #
@@ -92,59 +92,59 @@ function init_lognormal(index_set::AbstractIndexSet, sample_method::AbstractSamp
     args = Dict{Symbol,Any}(kwargs)
     args[:index_set] = index_set
 
-	# required keys
-	args[:max_index_set_param] = get_arg(args, :max_index_set_param)
-	if index_set isa Union{AD, U}
-		args[:max_search_space] = get_arg(args, :max_search_space)
-	end
+    # required keys
+    args[:max_index_set_param] = get_arg(args, :max_index_set_param)
+    if index_set isa Union{AD, U}
+        args[:max_search_space] = get_arg(args, :max_search_space)
+    end
 
     # compute Gaussian random fields
     cov_fun = CovarianceFunction(2, get_arg(args, :covariance_function))
     indices = get_max_index_set(index_set, args)
     m0 = get_arg(args, :nb_of_coarse_dofs)
     minpadding = get_arg(args, :minpadding)
-	p = minpadding isa Function ? minpadding : i -> minpadding
+    p = minpadding isa Function ? minpadding : i -> minpadding
     grf_generator = get_arg(args, :grf_generator)
-	grfs = Dict(index => compute_grf(cov_fun, grf_generator, m0, index, p(index)) for index in indices)
+    grfs = Dict(index => compute_grf(cov_fun, grf_generator, m0, index, p(index)) for index in indices)
 
-	# reorder for QMC
-	if grf_generator isa CirculantEmbedding
-		reorder = Dict(index => reordering(grfs[index]) for index in indices)  
-	else
-		reorder = Dict(index => 1:randdim(grfs[index]) for index in indices)
-	end
+    # reorder for QMC
+    if grf_generator isa CirculantEmbedding
+        reorder = Dict(index => reordering(grfs[index]) for index in indices)  
+    else
+        reorder = Dict(index => 1:randdim(grfs[index]) for index in indices)
+    end
 
     # sample function
     qoi = get_arg(args, :qoi)
     solver = get_arg(args, :solver)
-	reuse = index_set isa U ? Reuse() : NoReuse()
-	analyse = get_arg(args, :analyse)
-	if analyse != NoAnalyse() && get_arg(args, :solver) == DirectSolver()
-		throw(ArgumentError("no analyse available for DirectSolver."))
-	end
-	sample_function = (index, x) -> sample_lognormal(index, x, grfs[index], reorder[index], qoi, solver, reuse, analyse)
+    reuse = index_set isa U ? Reuse() : NoReuse()
+    analyse = get_arg(args, :analyse)
+    if analyse != NoAnalyse() && get_arg(args, :solver) == DirectSolver()
+        throw(ArgumentError("no analyse available for DirectSolver."))
+    end
+    sample_function = (index, x) -> sample_lognormal(index, x, grfs[index], reorder[index], qoi, solver, reuse, analyse)
 
     # distributions
     s = maximum(randdim.(collect(values(grfs))))
     distributions = [Normal() for i in 1:s]
 
-	# set nb_of_uncertainties for more efficient sampling
-	args[:nb_of_uncertainties] = index -> randdim(grfs[index])
+    # set nb_of_uncertainties for more efficient sampling
+    args[:nb_of_uncertainties] = index -> randdim(grfs[index])
 
-	# set nb of qoi
-	if qoi isa Qoi3
-		args[:nb_of_qoi] = 16
-	end
+    # set nb of qoi
+    if qoi isa Qoi3
+        args[:nb_of_qoi] = 16
+    end
 
-	# qmc
-	if sample_method isa QMC
-		args[:point_generator] = LatticeRule32(3600)
-	end
+    # qmc
+    if sample_method isa QMC
+        args[:point_generator] = LatticeRule32(3600)
+    end
 
     # estimator
-	for key in forbidden_keys() 
-		delete!(args, key)
-	end
+    for key in forbidden_keys() 
+        delete!(args, key)
+    end
     Estimator(index_set, sample_method, sample_function, distributions; args...)
 
 end
@@ -172,9 +172,9 @@ compute_grf(cov_fun, grf_generator::GaussianRandomFieldGenerator, pts, p) = Gaus
 compute_grf(cov_fun, grf_generator::CirculantEmbedding, pts, p) = GaussianRandomField(cov_fun, grf_generator, pts..., minpadding=p, measure=false)
 
 function reordering(grf::GaussianRandomField{<:CirculantEmbedding})
-	v, P = grf.data
-	I = sortperm(view(v, :), rev=true)
-	x = collect(1:length(v))
-	x[I] .= 1:length(v)
-	return x
+    v, P = grf.data
+    I = sortperm(view(v, :), rev=true)
+    x = collect(1:length(v))
+    x[I] .= 1:length(v)
+    return x
 end
