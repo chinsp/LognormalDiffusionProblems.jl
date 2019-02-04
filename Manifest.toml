@@ -123,9 +123,9 @@ version = "0.11.2"
 
 [[IterativeSolvers]]
 deps = ["LinearAlgebra", "Printf", "Random", "RecipesBase", "SparseArrays", "Test"]
-git-tree-sha1 = "a7b8056ecd43aa0d112d4b5d04180194d12c3c62"
+git-tree-sha1 = "5687f68018b4f14c0da54d402bb23eecaec17f37"
 uuid = "42fd0dbc-a981-5370-80f2-aaf504508153"
-version = "0.7.1"
+version = "0.8.1"
 
 [[JLD2]]
 deps = ["CodecZlib", "DataStructures", "FileIO", "LinearAlgebra", "Mmap", "Printf", "Random", "Test"]
@@ -173,15 +173,15 @@ uuid = "a63ad114-7e13-5084-954f-fe012c677804"
 
 [[MultilevelEstimators]]
 deps = ["Dates", "DelimitedFiles", "Distributed", "JLD2", "LinearAlgebra", "Printf", "Random", "SpecialFunctions", "Statistics"]
-git-tree-sha1 = "27be71b6de83a9f8c1192ee238cdc7241643dbf4"
+git-tree-sha1 = "c5cdbd7110b525eca9f7aabdfef926cdb79bf517"
 repo-rev = "master"
 repo-url = "https://github.com/PieterjanRobbe/MultilevelEstimators.jl.git"
 uuid = "bc769cb7-f249-5bba-802a-80f19cb247ec"
-version = "0.0.0"
+version = "0.1.0"
 
 [[NotSoSimpleMultigrid]]
 deps = ["LinearAlgebra", "Printf", "Requires", "SimpleMultigrid", "SparseArrays", "StaticArrays", "Statistics", "Test"]
-git-tree-sha1 = "e7ac537dbe13dbf78fbc99a1388638c7b16092cf"
+git-tree-sha1 = "ceecc38cd1c9d9cd145203238f0c7f50220b5af1"
 repo-rev = "master"
 repo-url = "https://github.com/PieterjanRobbe/NotSoSimpleMultigrid.jl.git"
 uuid = "bc769cb7-f249-5bba-802a-79f19cb249ec"
@@ -189,9 +189,9 @@ version = "1.0.0"
 
 [[OffsetArrays]]
 deps = ["DelimitedFiles", "Test"]
-git-tree-sha1 = "7d1442cb06fbfbc4fea936c3c56b38daffd22d3b"
+git-tree-sha1 = "e6893807f09c1d5517861ded8b203cb96cb7d44a"
 uuid = "6fe1bfb0-de20-5000-8ca7-80f57d26f881"
-version = "0.9.1"
+version = "0.10.0"
 
 [[OrderedCollections]]
 deps = ["Random", "Serialization", "Test"]
@@ -247,9 +247,9 @@ version = "0.3.0"
 
 [[RecipesBase]]
 deps = ["Random", "Test"]
-git-tree-sha1 = "b18c3d875ad6805e3db59c4e81f206f04df71d66"
+git-tree-sha1 = "0b3cb370ee4dc00f47f1193101600949f3dcf884"
 uuid = "3cdcf5f2-1ef4-517c-9805-6587b60abb01"
-version = "0.5.0"
+version = "0.6.0"
 
 [[Reexport]]
 deps = ["Pkg"]
@@ -265,9 +265,9 @@ version = "0.5.2"
 
 [[Retry]]
 deps = ["Test"]
-git-tree-sha1 = "de2c066886416190da2ab3dbaa0e89e09ccd03c2"
+git-tree-sha1 = "56bfdfca33e70883e96fd398548ebd4d405b41fe"
 uuid = "20febd7b-183b-5ae2-ac4a-720e7ce64774"
-version = "0.3.0"
+version = "0.4.0"
 
 [[SHA]]
 uuid = "ea8e919c-243c-51af-8825-aaa63cd721ce"
