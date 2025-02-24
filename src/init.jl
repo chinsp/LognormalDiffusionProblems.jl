@@ -11,6 +11,8 @@ struct Qoi3 <:AbstractQoi end
 
 struct Qoi4 <:AbstractQoi end
 
+struct Qoi5 <:AbstractQoi end
+
 #
 # AbstractSolver
 #
