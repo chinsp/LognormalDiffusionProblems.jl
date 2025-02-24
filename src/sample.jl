@@ -127,6 +127,22 @@ end
 	trapz((m-1)*view(px, :, m-1), 1)[1]
 end
 
+"average value of solution over 16 sub-cells"
+@inline function apply_qoi(x, ::Qoi5)
+	sz = size(x) .+ 1
+	idx_div = div.(sz, 4)
+	i_ranges = [1,idx_div[1],2*idx_div[1],3*idx_div[1],4*idx_div[1]]
+	j_ranges = [1,idx_div[2],2*idx_div[2],3*idx_div[2],4*idx_div[2]]
+	sol = zeros(Float64,16);
+	for i = 1:4
+		for j = 1:4
+			i_start = (i_ranges[i],j_ranges[j]);
+			i_end = (i_ranges[i+1],j_ranges[j+1]);
+			sol[j + (i-1)*4] = 16*trapz(trapz(view(x, UnitRange.(i_start, i_end)...), 1), 2)[1]
+		end
+	end
+	sol
+end
 #
 # trapezoidal rule for computation of integrals in quantity of interest 
 #
